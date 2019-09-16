@@ -65,8 +65,8 @@ function sortByFrequency(array) {
 	});
 }
 
-var bestValueCraft = mostFrequentOccuranceIn(craftableCards);
-var valueCraftList = sortByFrequency(craftableCards);
+var bestValueCraft = mostFrequentOccuranceIn(allCraftableCards);
+var valueCraftList = sortByFrequency(allCraftableCards);
 
 console.log(bestValueCraft);
 console.log(valueCraftList);
