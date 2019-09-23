@@ -1,0 +1,30 @@
+{
+    "name": "Value Generator",
+    "description": "A tool for Hearthstone and HSReplay to maximize player resource value.",
+    "manifest_version": 2,
+    "version": "0.1",
+    "page_action": {
+        "default_icon": {
+            "16": "images/icon16.png",
+            "24": "images/icon24.png",
+            "32": "images/icon32.png"
+          },
+        "default_title": "Value Generator",
+        "default_popup": "index.html"
+    },
+    "permissions" : [
+        "declarativeContent"
+      ],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+        "matches": [
+            "https://hsreplay.net/decks/*"
+        ],
+        "js": ["jquery-3.4.1.min.js", "content.js"]
+        }
+    ]
+}
