@@ -1,0 +1,24 @@
+{
+	"manifest_version": 2,
+	"name": "The Unofficial HSReplay.net Value Companion",
+	"description": "This extension works with HSReplay.net data and collection syncing to try to optimize your dust spending.  By finding the cards missing from your collection that are featured on the page, it calculates the most frequent occurance to maximize value.",
+	"version": "0.1",
+	"permissions": [ "storage" ],
+	"content_scripts": [
+		{
+			"matches": [ "https://hsreplay.net/decks/*" ],
+			"js": [ "scripts/jquery-3.4.1.min.js", "scripts/content.js" ]
+		}
+	],
+	"background": {
+		"scripts": [ "scripts/background.js" ]
+	},
+	"browser_action": {
+		"default_popup": "popup.html",
+		"default_icon": {
+			"16": "images/icon16.png",
+			"24": "images/icon24.png",
+			"32": "images/icon32.png"
+		}
+	}
+}
