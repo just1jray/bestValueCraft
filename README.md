@@ -6,13 +6,8 @@ Using the data from HSReplay.net the tool finds the best possible card for you t
 
 In order for the tool to operate you need to be signed in with collection syncing turned on.
 
-The tool can be loaded into the Chrome Browser as an unpacked extension.
-
-Currently the tool runs only once on page load.  If you refresh the page after changing the filter it will update the card.
-
-# Want To Add
-- Refresh Popup on icon click
-- Refresh button on Popup page
+# Want To Add/Change
+- Change behavior of content script to not run on any click.  Icon click?
 - Display ordered list of cards by frequency
 - UI Update
 - Add additional card data to Popup
@@ -27,6 +22,7 @@ Currently the tool runs only once on page load.  If you refresh the page after c
 5. Find and choose the directory, then click "Select".
 
 # Usage
-1. Navigate to https://hsreplay.net/decks/
-2. Click the icon to the right of the address bar to show card.
-3. Filter by choice then refresh the page to update.
+1. Visit HSReplay.net to sign in and upload your collection.
+2. Navigate to https://hsreplay.net/decks/
+3. Click the icon to the right of the address bar to show card.
+4. Filter by choice then refresh the page to update.
