@@ -1,0 +1,22 @@
+body {
+	margin: 0;
+	text-align: center;
+	background-image: url(images/hs-texture-bg.jpg);
+	width: 200px;
+	height: 350px;
+}
+
+#card-name {
+	position: relative;
+	top: 40px;
+	margin: 0;
+	color: white;
+	font-size: 100%;
+}
+
+#card-img {
+	position: absolute;
+	top: 70px;
+	left: 10px;
+	width: 95%;
+}
