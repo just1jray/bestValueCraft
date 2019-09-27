@@ -22,7 +22,7 @@ In order for the tool to operate you need to be signed in with collection syncin
 5. Find and choose the directory, then click "Select".
 
 # Usage
-1. Visit HSReplay.net to sign in and upload your collection.
+1. Visit [HSReplay.net] to sign in and upload your collection.
 2. Navigate to https://hsreplay.net/decks/
 3. Click the icon to the right of the address bar to show card.
 4. Filter by choice and repeat step 3!
