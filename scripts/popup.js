@@ -1,4 +1,4 @@
-console.log('Popup script running...');
+// console.log('Popup script running...');
 
 chrome.storage.sync.get([ 'card' ], function(data) {
 	if (typeof data.card == 'undefined') {

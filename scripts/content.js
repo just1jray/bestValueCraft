@@ -1,24 +1,25 @@
-console.log('Content script running...');
+// console.log('Content script running...');
 
 var bestValueCraft;
 window.addEventListener('load', findBestCraft);
+document.addEventListener('click', () => findBestCraft());
 
 function findBestCraft() {
 	var allCraftableCardData = getCardData();
-	console.log(allCraftableCardData);
+	// console.log(allCraftableCardData);
 	var allCraftableCards = trimMultiplierText(allCraftableCardData[0], allCraftableCardData[1]);
-	console.log(allCraftableCards);
+	// console.log(allCraftableCards);
 	var bestValueCraftCard = mostFrequentOccuranceIn(allCraftableCards[0]);
-	console.log(bestValueCraftCard);
+	// console.log(bestValueCraftCard);
 	var bestValueCraftImageLink = mostFrequentOccuranceIn(allCraftableCards[1]);
-	console.log(bestValueCraftImageLink);
+	// console.log(bestValueCraftImageLink);
 	bestValueCraft = [ bestValueCraftCard[0], bestValueCraftImageLink[0] ];
 	// var valueCraftList = sortByFrequency(allCraftableCards[0]);
-	console.log(bestValueCraft);
+	// console.log(bestValueCraft);
 
 	chrome.storage.sync.set({ card: bestValueCraft });
 
-	console.log('Done.');
+	// console.log('Done.');
 }
 
 function getCardData() {
@@ -27,13 +28,10 @@ function getCardData() {
 	var cardData = {};
 
 	craftableCards = getCraftableCards();
-	console.log(craftableCards);
+	// console.log(craftableCards);
 	craftableCardImageLinks = getCraftableCardImageLinks();
-	console.log(craftableCardImageLinks);
+	// console.log(craftableCardImageLinks);
 
-	// craftableCards.forEach((craftableCards, i) => (cardData[craftableCards] = craftableCardImageLinks[i]));
-	// console.log(cardData);
-	// return cardData;
 	return [ craftableCards, craftableCardImageLinks ];
 }
 
