@@ -1,8 +1,12 @@
 // console.log('Content script running...');
 
 var bestValueCraft;
+var debounceTimer;
 window.addEventListener('load', findBestCraft);
-document.addEventListener('click', () => findBestCraft());
+document.addEventListener('click', function() {
+	clearTimeout(debounceTimer);
+	debounceTimer = setTimeout(findBestCraft, 300);
+});
 
 function findBestCraft() {
 	var allCraftableCardData = getCardData();
@@ -11,9 +15,8 @@ function findBestCraft() {
 	// console.log(allCraftableCards);
 	var bestValueCraftCard = mostFrequentOccuranceIn(allCraftableCards[0]);
 	// console.log(bestValueCraftCard);
-	var bestValueCraftImageLink = mostFrequentOccuranceIn(allCraftableCards[1]);
-	// console.log(bestValueCraftImageLink);
-	bestValueCraft = [ bestValueCraftCard[0], bestValueCraftImageLink[0] ];
+	var bestCardIndex = allCraftableCards[0].indexOf(bestValueCraftCard[0]);
+	bestValueCraft = [ bestValueCraftCard[0], allCraftableCards[1][bestCardIndex] ];
 	// var valueCraftList = sortByFrequency(allCraftableCards[0]);
 	// console.log(bestValueCraft);
 
@@ -54,15 +57,20 @@ function getCraftableCardImageLinks() {
 }
 
 function trimMultiplierText(array, parallelArray) {
+	var newArray = [];
+	var newParallelArray = [];
 	for (var i = 0; i < array.length; i++) {
-		var last3Characters = array[i].slice(-3, array[i].length);
+		var last3Characters = array[i].slice(-3);
 		if (last3Characters === ' ×2') {
-			array[i] = array[i].slice(0, -3);
-			array.push(array[i]);
-			parallelArray.push(parallelArray[i]);
+			var trimmed = array[i].slice(0, -3);
+			newArray.push(trimmed, trimmed);
+			newParallelArray.push(parallelArray[i], parallelArray[i]);
+		} else {
+			newArray.push(array[i]);
+			newParallelArray.push(parallelArray[i]);
 		}
 	}
-	return [ array, parallelArray ];
+	return [ newArray, newParallelArray ];
 }
 
 function mostFrequentOccuranceIn(array) {
