@@ -21,9 +21,10 @@ function getCardData() {
 	var images = [];
 	document.querySelectorAll('.craftable').forEach(function(el) {
 		var name = el.getAttribute('aria-label');
-		var bg = getComputedStyle(el).backgroundImage;
+		var bg = el.style.backgroundImage;
 		var match = bg.match(/url\(["']?([^"')]+)["']?\)/);
-		var imgUrl = match ? match[1] : null;
+		var cardId = match ? match[1].split('/').pop().replace(/\.\w+$/, '') : null;
+		var imgUrl = cardId ? 'https://art.hearthstonejson.com/v1/256x/' + cardId + '.jpg' : null;
 		if (name && imgUrl) {
 			names.push(name);
 			images.push(imgUrl);
