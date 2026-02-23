@@ -59,9 +59,9 @@ function getCraftableCards() {
 function getCraftableCardImageLinks() {
 	var craftableCardImageLinks = $('.craftable')
 		.map(function() {
-			var img = $(this).parent().siblings().find('img');
-			console.log('craftable element:', this, '| img found:', img.length, '| src:', img.attr('src'));
-			return img.attr('src');
+			var bg = $(this).css('background-image');
+			var match = bg.match(/url\(["']?([^"')]+)["']?\)/);
+			return match ? match[1] : null;
 		})
 		.get();
 	console.log('craftableCardImageLinks:', craftableCardImageLinks);
