@@ -2,10 +2,17 @@
 
 var bestValueCraft;
 var debounceTimer;
-window.addEventListener('load', findBestCraft);
-document.addEventListener('click', function() {
-	clearTimeout(debounceTimer);
-	debounceTimer = setTimeout(findBestCraft, 300);
+
+window.addEventListener('load', function() {
+	findBestCraft();
+	var container = document.querySelector('#list-container');
+	if (container) {
+		var observer = new MutationObserver(function() {
+			clearTimeout(debounceTimer);
+			debounceTimer = setTimeout(findBestCraft, 500);
+		});
+		observer.observe(container, { childList: true, subtree: true });
+	}
 });
 
 function findBestCraft() {
