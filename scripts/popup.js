@@ -1,11 +1,10 @@
-// console.log('Popup script running...');
-
-chrome.storage.sync.get([ 'card' ], function(data) {
-	if (typeof data.card == 'undefined') {
-		$('h1').text('Error');
-		console.log(data.card);
-	} else {
-		$('h1').text(data.card[0]);
-		$('img').attr('src', data.card[1]);
-	}
+chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+	chrome.tabs.sendMessage(tabs[0].id, { type: 'getBestCard' }, function(response) {
+		if (chrome.runtime.lastError || !response || !response.card[0]) {
+			document.querySelector('h1').textContent = 'Visit HSReplay.net/decks to find your best craft!';
+		} else {
+			document.querySelector('h1').textContent = response.card[0];
+			document.querySelector('img').src = response.card[1];
+		}
+	});
 });
