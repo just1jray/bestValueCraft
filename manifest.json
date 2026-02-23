@@ -7,9 +7,7 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"https://hsreplay.net/decks/",
-				"https://hsreplay.net/decks/#*",
-				"https://hsreplay.net/decks/?*"
+				"https://hsreplay.net/decks/*"
 			],
 			"js": [ "scripts/jquery-3.4.1.min.js", "scripts/content.js" ]
 		}
