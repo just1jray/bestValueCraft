@@ -1,4 +1,4 @@
-// console.log('Content script running...');
+console.log('Content script running...');
 
 var bestValueCraft;
 var debounceTimer;
@@ -27,9 +27,10 @@ function findBestCraft() {
 	// var valueCraftList = sortByFrequency(allCraftableCards[0]);
 	// console.log(bestValueCraft);
 
+	console.log('bestValueCraft:', bestValueCraft);
 	chrome.storage.sync.set({ card: bestValueCraft });
 
-	// console.log('Done.');
+	console.log('Done.');
 }
 
 function getCardData() {
@@ -51,15 +52,19 @@ function getCraftableCards() {
 			return $(this).attr('aria-label');
 		})
 		.get();
+	console.log('craftableCards (' + craftableCards.length + '):', craftableCards);
 	return craftableCards;
 }
 
 function getCraftableCardImageLinks() {
 	var craftableCardImageLinks = $('.craftable')
 		.map(function() {
-			return $(this).parent().siblings().find('img').attr('src');
+			var img = $(this).parent().siblings().find('img');
+			console.log('craftable element:', this, '| img found:', img.length, '| src:', img.attr('src'));
+			return img.attr('src');
 		})
 		.get();
+	console.log('craftableCardImageLinks:', craftableCardImageLinks);
 	return craftableCardImageLinks;
 }
 
