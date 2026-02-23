@@ -1,71 +1,36 @@
 console.log('Content script running...');
 
-var bestValueCraft;
-var debounceTimer;
-
-window.addEventListener('load', function() {
-	findBestCraft();
-	var container = document.querySelector('#list-container');
-	if (container) {
-		var observer = new MutationObserver(function() {
-			clearTimeout(debounceTimer);
-			debounceTimer = setTimeout(findBestCraft, 500);
-		});
-		observer.observe(container, { childList: true, subtree: true });
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	if (request.type === 'getBestCard') {
+		sendResponse({ card: findBestCraft() });
 	}
 });
 
 function findBestCraft() {
 	var allCraftableCardData = getCardData();
-	// console.log(allCraftableCardData);
 	var allCraftableCards = trimMultiplierText(allCraftableCardData[0], allCraftableCardData[1]);
-	// console.log(allCraftableCards);
 	var bestValueCraftCard = mostFrequentOccuranceIn(allCraftableCards[0]);
-	// console.log(bestValueCraftCard);
 	var bestCardIndex = allCraftableCards[0].indexOf(bestValueCraftCard[0]);
-	bestValueCraft = [ bestValueCraftCard[0], allCraftableCards[1][bestCardIndex] ];
-	// var valueCraftList = sortByFrequency(allCraftableCards[0]);
-	// console.log(bestValueCraft);
-
-	console.log('bestValueCraft:', bestValueCraft);
-	chrome.storage.sync.set({ card: bestValueCraft });
-
-	console.log('Done.');
+	var result = [ bestValueCraftCard[0], allCraftableCards[1][bestCardIndex] ];
+	console.log('bestValueCraft:', result);
+	return result;
 }
 
 function getCardData() {
-	var craftableCards = [];
-	var craftableCardImageLinks = [];
-	var cardData = {};
-
-	craftableCards = getCraftableCards();
-	// console.log(craftableCards);
-	craftableCardImageLinks = getCraftableCardImageLinks();
-	// console.log(craftableCardImageLinks);
-
-	return [ craftableCards, craftableCardImageLinks ];
-}
-
-function getCraftableCards() {
-	var craftableCards = $('.craftable')
-		.map(function() {
-			return $(this).attr('aria-label');
-		})
-		.get();
-	console.log('craftableCards (' + craftableCards.length + '):', craftableCards);
-	return craftableCards;
-}
-
-function getCraftableCardImageLinks() {
-	var craftableCardImageLinks = $('.craftable')
-		.map(function() {
-			var bg = $(this).css('background-image');
-			var match = bg.match(/url\(["']?([^"')]+)["']?\)/);
-			return match ? match[1] : null;
-		})
-		.get();
-	console.log('craftableCardImageLinks:', craftableCardImageLinks);
-	return craftableCardImageLinks;
+	var names = [];
+	var images = [];
+	document.querySelectorAll('.craftable').forEach(function(el) {
+		var name = el.getAttribute('aria-label');
+		var bg = getComputedStyle(el).backgroundImage;
+		var match = bg.match(/url\(["']?([^"')]+)["']?\)/);
+		var imgUrl = match ? match[1] : null;
+		if (name && imgUrl) {
+			names.push(name);
+			images.push(imgUrl);
+		}
+	});
+	console.log('craftableCards (' + names.length + '):', names);
+	return [ names, images ];
 }
 
 function trimMultiplierText(array, parallelArray) {
