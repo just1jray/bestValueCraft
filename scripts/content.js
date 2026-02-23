@@ -24,7 +24,7 @@ function getCardData() {
 		var bg = el.style.backgroundImage;
 		var match = bg.match(/url\(["']?([^"')]+)["']?\)/);
 		var cardId = match ? match[1].split('/').pop().replace(/\.\w+$/, '') : null;
-		var imgUrl = cardId ? 'https://art.hearthstonejson.com/v1/256x/' + cardId + '.jpg' : null;
+		var imgUrl = cardId ? 'https://art.hearthstonejson.com/v1/render/latest/enUS/256x/' + cardId + '.png' : null;
 		if (name && imgUrl) {
 			names.push(name);
 			images.push(imgUrl);
