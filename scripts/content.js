@@ -8,10 +8,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function findBestCraft() {
 	var allCraftableCardData = getCardData();
-	var allCraftableCards = trimMultiplierText(allCraftableCardData[0], allCraftableCardData[1]);
+	var allCraftableCards = trimMultiplierText(allCraftableCardData[0], allCraftableCardData[1], allCraftableCardData[2]);
 	var bestValueCraftCard = mostFrequentOccuranceIn(allCraftableCards[0]);
 	var bestCardIndex = allCraftableCards[0].indexOf(bestValueCraftCard[0]);
-	var result = [ bestValueCraftCard[0], allCraftableCards[1][bestCardIndex] ];
+	var result = {
+		name: bestValueCraftCard[0],
+		imageUrl: allCraftableCards[1][bestCardIndex],
+		cardId: allCraftableCards[2][bestCardIndex],
+		frequency: bestValueCraftCard[1]
+	};
 	console.log('bestValueCraft:', result);
 	return result;
 }
@@ -19,6 +24,7 @@ function findBestCraft() {
 function getCardData() {
 	var names = [];
 	var images = [];
+	var cardIds = [];
 	document.querySelectorAll('.craftable').forEach(function(el) {
 		var name = el.getAttribute('aria-label');
 		var bg = el.style.backgroundImage;
@@ -28,27 +34,31 @@ function getCardData() {
 		if (name && imgUrl) {
 			names.push(name);
 			images.push(imgUrl);
+			cardIds.push(cardId);
 		}
 	});
 	console.log('craftableCards (' + names.length + '):', names);
-	return [ names, images ];
+	return [ names, images, cardIds ];
 }
 
-function trimMultiplierText(array, parallelArray) {
+function trimMultiplierText(array, parallelArray, parallelArray2) {
 	var newArray = [];
 	var newParallelArray = [];
+	var newParallelArray2 = [];
 	for (var i = 0; i < array.length; i++) {
 		var last3Characters = array[i].slice(-3);
 		if (last3Characters === ' ×2') {
 			var trimmed = array[i].slice(0, -3);
 			newArray.push(trimmed, trimmed);
 			newParallelArray.push(parallelArray[i], parallelArray[i]);
+			newParallelArray2.push(parallelArray2[i], parallelArray2[i]);
 		} else {
 			newArray.push(array[i]);
 			newParallelArray.push(parallelArray[i]);
+			newParallelArray2.push(parallelArray2[i]);
 		}
 	}
-	return [ newArray, newParallelArray ];
+	return [ newArray, newParallelArray, newParallelArray2 ];
 }
 
 function mostFrequentOccuranceIn(array) {

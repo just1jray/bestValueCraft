@@ -1,15 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Value!</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/warcraft.css">
+  <link rel="stylesheet" href="styles.css">
+  <title>Best Craft</title>
 </head>
 <body>
-    <h1 id="card-name">Find the best card to craft!</h1>
-    <img id="card-img" src="" alt="card">
-    <script src="scripts/popup.js"></script>
+  <!-- Loading state -->
+  <div id="loading-state">
+    <div id="loading-frame" class="wc-card-border fantasy">
+      <div class="wc-skeleton-shimmer"></div>
+      <p>Finding best craft...</p>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div id="error-state" style="display:none">
+    <div class="wc-card-border fantasy" id="error-frame">
+      Visit HSReplay.net/decks to find your best craft!
+    </div>
+  </div>
+
+  <!-- Card panel -->
+  <div id="card-panel" style="display:none">
+    <div id="card-img-wrap" class="wc-card-border fantasy">
+      <img id="card-img" alt="card">
+    </div>
+    <div class="card-meta">
+      <h1 id="card-name"></h1>
+      <div id="rarity-badge"></div>
+      <div class="stats-row">
+        <span id="mana-cost" title="Mana Cost"></span>
+        <span id="card-class"></span>
+      </div>
+      <div id="combat-stats">
+        <span id="attack-val" title="Attack"></span>
+        <span id="health-val" title="Health"></span>
+      </div>
+      <div id="card-type"></div>
+      <div id="card-set"></div>
+      <div id="card-text"></div>
+      <div id="craft-value">
+        Appears in <strong id="frequency"></strong> decks
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/popup.js"></script>
 </body>
 </html>
