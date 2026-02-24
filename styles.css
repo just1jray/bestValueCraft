@@ -1,28 +1,326 @@
-body {
-	margin: 0;
-	padding: 10px;
-	box-sizing: border-box;
-	text-align: center;
-	background-image: url(images/hs-texture-bg.jpg);
-	background-size: cover;
-	width: 200px;
-	height: 350px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-#card-name {
-	margin: 0 0 8px 0;
-	color: white;
-	font-size: 14px;
-	font-weight: bold;
-	text-shadow: 1px 1px 3px black;
+/* ============================================
+   BODY — transparent, no outer color box
+   ============================================ */
+
+body {
+  width: 280px;
+  background: hsl(35 10% 6%);
+  font-family: "Cinzel", serif;
+  color: hsl(40 50% 85%);
+}
+
+/* ============================================
+   SHARED FRAME STYLE — wooden card-bg border
+   border-image-source comes from .wc-card-border
+   in warcraft.css; we complete the setup here
+   ============================================ */
+
+#card-img-wrap,
+#loading-frame,
+#error-frame {
+  border: 24px solid transparent;
+  border-image-source: url("images/card-bg.webp");
+  border-image-slice: 24 fill;
+  border-image-repeat: stretch;
+}
+
+/* ============================================
+   LOADING STATE
+   ============================================ */
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1.0; }
+}
+
+#loading-state {
+  display: flex;
+}
+
+#loading-frame {
+  position: relative;
+  overflow: hidden;
+  min-height: 380px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#loading-frame p {
+  color: hsl(45 70% 72%);
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px hsl(45 60% 50% / 0.6);
+  animation: pulse-glow 1.8s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   ERROR STATE
+   ============================================ */
+
+#error-state {
+  display: none;
+}
+
+#error-frame {
+  min-height: 380px;
+  width: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  color: hsl(40 60% 78%);
+  font-size: 13px;
+  line-height: 1.6;
+  text-shadow: 0 1px 4px hsl(0 0% 0% / 0.7);
+}
+
+/* ============================================
+   CARD PANEL — image frame + meta below
+   ============================================ */
+
+#card-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ============================================
+   CARD IMAGE WRAPPER — wooden frame around card
+   ============================================ */
+
+#card-img-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 280px;
 }
 
 #card-img {
-	width: 90%;
-	max-height: 295px;
-	object-fit: contain;
+  width: 180px;
+  height: auto;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   RARITY GLOW — softened
+   ============================================ */
+
+/* Legendary — orange/gold */
+body.rarity-legendary #card-img-wrap {
+  background: radial-gradient(ellipse 80% 60% at 50% 50%,
+    rgba(220, 110, 20, 0.15) 0%,
+    rgba(180, 80, 10, 0.06) 50%,
+    transparent 75%);
+  box-shadow:
+    0 0 20px 6px rgba(201, 109, 36, 0.12),
+    0 0 40px 10px rgba(180, 80, 10, 0.06);
+}
+body.rarity-legendary #card-img {
+  filter:
+    drop-shadow(0 0  5px rgba(255, 160,  50, 0.55))
+    drop-shadow(0 0 14px rgba(220, 110,  20, 0.40))
+    drop-shadow(0 0 28px rgba(180,  70,   0, 0.25));
+}
+
+/* Epic — purple */
+body.rarity-epic #card-img-wrap {
+  background: radial-gradient(ellipse 80% 60% at 50% 50%,
+    rgba(160, 60, 210, 0.15) 0%,
+    rgba(120, 40, 170, 0.06) 50%,
+    transparent 75%);
+  box-shadow:
+    0 0 20px 6px rgba(138, 59, 168, 0.12),
+    0 0 40px 10px rgba(100, 30, 140, 0.06);
+}
+body.rarity-epic #card-img {
+  filter:
+    drop-shadow(0 0  5px rgba(210, 120, 255, 0.55))
+    drop-shadow(0 0 14px rgba(160,  60, 210, 0.40))
+    drop-shadow(0 0 28px rgba(100,  20, 160, 0.25));
+}
+
+/* Rare — blue */
+body.rarity-rare #card-img-wrap {
+  background: radial-gradient(ellipse 80% 60% at 50% 50%,
+    rgba(50, 110, 210, 0.15) 0%,
+    rgba(30,  80, 170, 0.06) 50%,
+    transparent 75%);
+  box-shadow:
+    0 0 20px 6px rgba(42, 106, 173, 0.12),
+    0 0 40px 10px rgba(20,  70, 140, 0.06);
+}
+body.rarity-rare #card-img {
+  filter:
+    drop-shadow(0 0  5px rgba(100, 170, 255, 0.55))
+    drop-shadow(0 0 14px rgba( 50, 120, 220, 0.40))
+    drop-shadow(0 0 28px rgba( 20,  80, 170, 0.25));
+}
+
+/* Common — warm silver/stone */
+body.rarity-common #card-img-wrap {
+  background: radial-gradient(ellipse 80% 60% at 50% 50%,
+    rgba(180, 160, 130, 0.10) 0%,
+    rgba(140, 120, 100, 0.04) 50%,
+    transparent 75%);
+  box-shadow:
+    0 0 15px 5px rgba(160, 140, 110, 0.08),
+    0 0 30px 8px rgba(130, 110,  80, 0.04);
+}
+body.rarity-common #card-img {
+  filter:
+    drop-shadow(0 0  4px rgba(200, 185, 160, 0.50))
+    drop-shadow(0 0 10px rgba(160, 140, 110, 0.30))
+    drop-shadow(0 0 20px rgba(120, 100,  70, 0.15));
+}
+
+/* ============================================
+   CARD META — tooltip-style panel below the frame
+   ============================================ */
+
+.card-meta {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 12px 10px;
+  background: linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
+}
+
+/* Override wc-tooltip border so no colored outer line shows */
+.card-meta.wc-tooltip,
+.card-meta.wc-tooltip-rare,
+.card-meta.wc-tooltip-epic,
+.card-meta.wc-tooltip-legendary,
+.card-meta.wc-tooltip-uncommon {
+  border: none;
+}
+
+/* ============================================
+   CARD NAME — top, centered
+   ============================================ */
+
+#card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: hsl(45 80% 88%);
+  text-shadow: 0 1px 3px hsl(0 0% 0% / 0.8);
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* ============================================
+   RARITY BADGE — wc-btn-border-frame-sm
+   border-image-source from warcraft.css class;
+   we complete the border-image setup here
+   ============================================ */
+
+#rarity-badge {
+  align-self: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+#rarity-badge.rarity-legendary { color: #c96d24; text-shadow: 0 0 6px rgba(201,109,36,0.6); }
+#rarity-badge.rarity-epic      { color: #9b45c0; text-shadow: 0 0 6px rgba(155,69,192,0.6); }
+#rarity-badge.rarity-rare      { color: #3a7fc4; text-shadow: 0 0 6px rgba(58,127,196,0.6); }
+#rarity-badge.rarity-common    { color: #9d9d9d; }
+
+/* ============================================
+   STATS ROW (mana + class)
+   ============================================ */
+
+.stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid hsl(35 20% 28%);
+  padding-top: 4px;
+  margin-top: 14px;
+}
+
+#mana-cost {
+  font-size: 12px;
+  color: hsl(210 80% 75%);
+}
+
+#card-class {
+  font-size: 10px;
+  color: hsl(40 40% 65%);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ============================================
+   COMBAT STATS (attack / health)
+   ============================================ */
+
+#combat-stats {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+}
+
+#attack-val { color: hsl(15 80% 68%); }
+#health-val { color: hsl(350 70% 68%); }
+
+/* ============================================
+   TYPE / SET
+   ============================================ */
+
+#card-type,
+#card-set {
+  font-size: 10px;
+  color: hsl(40 30% 55%);
+  letter-spacing: 0.5px;
+}
+
+/* ============================================
+   CARD TEXT — centered, italic
+   ============================================ */
+
+#card-text {
+  font-size: 10px;
+  font-style: italic;
+  color: hsl(40 40% 75%);
+  line-height: 1.45;
+  max-height: 52px;
+  overflow: hidden;
+  border-top: 1px solid hsl(35 20% 28%);
+  padding-top: 4px;
+  text-align: center;
+}
+
+/* ============================================
+   CRAFT VALUE FOOTER
+   ============================================ */
+
+#craft-value {
+  font-size: 11px;
+  color: hsl(45 50% 55%);
+  border-top: 1px solid hsl(35 20% 28%);
+  padding-top: 4px;
+  text-align: center;
+}
+
+#craft-value strong {
+  color: hsl(45 70% 72%);
+  font-weight: 700;
 }
