@@ -31,6 +31,8 @@ function getCardData() {
 		var match = bg.match(/url\(["']?([^"')]+)["']?\)/);
 		var cardId = match ? match[1].split('/').pop().replace(/\.\w+$/, '') : null;
 		var imgUrl = cardId ? 'https://art.hearthstonejson.com/v1/render/latest/enUS/256x/' + cardId + '.png' : null;
+		// Skip Core set cards — they cannot be crafted with dust
+		if (cardId && cardId.startsWith('CORE_')) return;
 		if (name && imgUrl) {
 			names.push(name);
 			images.push(imgUrl);
