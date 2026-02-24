@@ -10,7 +10,7 @@
 
 body {
   width: 280px;
-  background: hsl(35 10% 6%);
+  background: hsl(28 35% 14%);
   font-family: "Cinzel", serif;
   color: hsl(40 50% 85%);
 }
@@ -28,6 +28,10 @@ body {
   border-image-source: url("images/card-bg.webp");
   border-image-slice: 24 fill;
   border-image-repeat: stretch;
+  margin-bottom: 16px;
+  filter:
+    drop-shadow(0 4px 12px hsl(0 0% 0% / 0.65))
+    drop-shadow(0 8px 24px hsl(25 30% 5% / 0.50));
 }
 
 /* ============================================
@@ -121,14 +125,13 @@ body {
    ============================================ */
 
 /* Legendary — orange/gold */
-body.rarity-legendary #card-img-wrap {
-  background: radial-gradient(ellipse 80% 60% at 50% 50%,
-    rgba(220, 110, 20, 0.15) 0%,
-    rgba(180, 80, 10, 0.06) 50%,
-    transparent 75%);
-  box-shadow:
-    0 0 20px 6px rgba(201, 109, 36, 0.12),
-    0 0 40px 10px rgba(180, 80, 10, 0.06);
+body.rarity-legendary .card-meta {
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 0%,
+      rgba(220, 110, 20, 0.30) 0%,
+      rgba(180, 80, 10, 0.12) 50%,
+      transparent 100%),
+    linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
 }
 body.rarity-legendary #card-img {
   filter:
@@ -138,14 +141,13 @@ body.rarity-legendary #card-img {
 }
 
 /* Epic — purple */
-body.rarity-epic #card-img-wrap {
-  background: radial-gradient(ellipse 80% 60% at 50% 50%,
-    rgba(160, 60, 210, 0.15) 0%,
-    rgba(120, 40, 170, 0.06) 50%,
-    transparent 75%);
-  box-shadow:
-    0 0 20px 6px rgba(138, 59, 168, 0.12),
-    0 0 40px 10px rgba(100, 30, 140, 0.06);
+body.rarity-epic .card-meta {
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 0%,
+      rgba(160, 60, 210, 0.30) 0%,
+      rgba(120, 40, 170, 0.12) 50%,
+      transparent 100%),
+    linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
 }
 body.rarity-epic #card-img {
   filter:
@@ -155,14 +157,13 @@ body.rarity-epic #card-img {
 }
 
 /* Rare — blue */
-body.rarity-rare #card-img-wrap {
-  background: radial-gradient(ellipse 80% 60% at 50% 50%,
-    rgba(50, 110, 210, 0.15) 0%,
-    rgba(30,  80, 170, 0.06) 50%,
-    transparent 75%);
-  box-shadow:
-    0 0 20px 6px rgba(42, 106, 173, 0.12),
-    0 0 40px 10px rgba(20,  70, 140, 0.06);
+body.rarity-rare .card-meta {
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 0%,
+      rgba(50, 110, 210, 0.30) 0%,
+      rgba(30,  80, 170, 0.12) 50%,
+      transparent 100%),
+    linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
 }
 body.rarity-rare #card-img {
   filter:
@@ -172,14 +173,13 @@ body.rarity-rare #card-img {
 }
 
 /* Common — warm silver/stone */
-body.rarity-common #card-img-wrap {
-  background: radial-gradient(ellipse 80% 60% at 50% 50%,
-    rgba(180, 160, 130, 0.10) 0%,
-    rgba(140, 120, 100, 0.04) 50%,
-    transparent 75%);
-  box-shadow:
-    0 0 15px 5px rgba(160, 140, 110, 0.08),
-    0 0 30px 8px rgba(130, 110,  80, 0.04);
+body.rarity-common .card-meta {
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 0%,
+      rgba(180, 160, 130, 0.20) 0%,
+      rgba(140, 120, 100, 0.08) 50%,
+      transparent 100%),
+    linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
 }
 body.rarity-common #card-img {
   filter:
@@ -298,14 +298,16 @@ body.rarity-common #card-img {
 
 #card-text {
   font-size: 10px;
-  font-style: italic;
   color: hsl(40 40% 75%);
   line-height: 1.45;
-  max-height: 52px;
-  overflow: hidden;
   border-top: 1px solid hsl(35 20% 28%);
   padding-top: 4px;
   text-align: center;
+}
+
+#card-text b {
+  font-weight: 700;
+  color: hsl(45 70% 88%);
 }
 
 /* ============================================

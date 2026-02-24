@@ -51,6 +51,14 @@ function stripHtml(html) {
     .trim();
 }
 
+function formatCardText(html) {
+  return html
+    .replace(/<(?!\/?b\b)[^>]+>/g, '')
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
+    .replace(/^\[x\]/i, '')
+    .trim();
+}
+
 function formatClass(cardClass) {
   if (!cardClass) return 'Neutral';
   return cardClass.charAt(0) + cardClass.slice(1).toLowerCase();
@@ -109,13 +117,13 @@ function renderCard(card, frequency) {
 
   // Set name
   var setCode = card.set || '';
-  var setName = SET_NAMES[setCode] || setCode;
+  var setName = SET_NAMES[setCode] || setCode.replace(/_/g, ' ');
   document.getElementById('card-set').textContent = 'Set: ' + setName;
 
   // Card text
   var cardTextEl = document.getElementById('card-text');
   if (card.text) {
-    cardTextEl.textContent = stripHtml(card.text);
+    cardTextEl.innerHTML = formatCardText(card.text);
     cardTextEl.style.display = 'block';
   } else {
     cardTextEl.style.display = 'none';
