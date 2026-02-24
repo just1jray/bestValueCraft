@@ -1,5 +1,3 @@
-console.log('Content script running...');
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.type === 'getBestCard') {
 		findBestCraft().then(function(result) {
@@ -18,16 +16,14 @@ function findBestCraft() {
 	return fetchUncraftableIds().then(function(uncraftableIds) {
 		var allCraftableCardData = getCardData(uncraftableIds);
 		var allCraftableCards = trimMultiplierText(allCraftableCardData[0], allCraftableCardData[1], allCraftableCardData[2]);
-		var bestValueCraftCard = mostFrequentOccuranceIn(allCraftableCards[0]);
+		var bestValueCraftCard = mostFrequentOccurrenceIn(allCraftableCards[0]);
 		var bestCardIndex = allCraftableCards[0].indexOf(bestValueCraftCard[0]);
-		var result = {
+		return {
 			name: bestValueCraftCard[0],
 			imageUrl: allCraftableCards[1][bestCardIndex],
 			cardId: allCraftableCards[2][bestCardIndex],
 			frequency: bestValueCraftCard[1]
 		};
-		console.log('bestValueCraft:', result);
-		return result;
 	});
 }
 
@@ -42,11 +38,9 @@ function fetchUncraftableIds() {
 					ids.add(card.id);
 				}
 			});
-			console.log('Uncraftable card IDs loaded:', ids.size);
 			return ids;
 		})
-		.catch(function(e) {
-			console.log('Could not fetch card data, falling back to CORE_ prefix filter only:', e);
+		.catch(function() {
 			return new Set();
 		});
 }
@@ -64,14 +58,13 @@ function getCardData(uncraftableIds) {
 		// Skip Core set cards — they cannot be crafted with dust
 		if (cardId && cardId.startsWith('CORE_')) return;
 		// Skip other uncraftable cards identified via HearthstoneJSON set data
-		if (cardId && uncraftableIds.has(cardId)) return;
+		if (cardId && uncraftableIds && uncraftableIds.has(cardId)) return;
 		if (name && imgUrl) {
 			names.push(name);
 			images.push(imgUrl);
 			cardIds.push(cardId);
 		}
 	});
-	console.log('craftableCards (' + names.length + '):', names);
 	return [ names, images, cardIds ];
 }
 
@@ -95,10 +88,10 @@ function trimMultiplierText(array, parallelArray, parallelArray2) {
 	return [ newArray, newParallelArray, newParallelArray2 ];
 }
 
-function mostFrequentOccuranceIn(array) {
+function mostFrequentOccurrenceIn(array) {
 	var counts = {};
-	var occurances = 0;
-	var mostFrequentOccurance;
+	var occurrences = 0;
+	var mostFrequentOccurrence;
 	for (var i = 0; i < array.length; i++) {
 		var word = array[i];
 
@@ -108,12 +101,12 @@ function mostFrequentOccuranceIn(array) {
 			counts[word] += 1;
 		}
 
-		if (counts[word] > occurances) {
-			occurances = counts[word];
-			mostFrequentOccurance = array[i];
+		if (counts[word] > occurrences) {
+			occurrences = counts[word];
+			mostFrequentOccurrence = array[i];
 		}
 	}
-	return [ mostFrequentOccurance, occurances ];
+	return [ mostFrequentOccurrence, occurrences ];
 }
 
 function getAllCardFrequencies() {
@@ -146,22 +139,5 @@ function getAllCardFrequencies() {
 			});
 		}
 	}
-	console.log('cardFrequencies (' + result.length + ' unique cards):', result);
 	return result;
-}
-
-function sortByFrequency(array) {
-	var frequency = {};
-
-	array.forEach(function(value) {
-		frequency[value] = 0;
-	});
-
-	var uniques = array.filter(function(value) {
-		return ++frequency[value] == 1;
-	});
-
-	return uniques.sort(function(a, b) {
-		return frequency[b] - frequency[a];
-	});
 }
