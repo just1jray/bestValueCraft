@@ -29,7 +29,7 @@ body {
   border-image-source: url("images/card-bg.webp");
   border-image-slice: 24 fill;
   border-image-repeat: stretch;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   filter:
     drop-shadow(0 4px 12px hsl(0 0% 0% / 0.65))
     drop-shadow(0 8px 24px hsl(25 30% 5% / 0.50));
@@ -342,21 +342,40 @@ body.rarity-common #card-img {
 
 #mode-footer {
   display: none;
-  width: 280px;
+  position: relative;
+  width: 100%;
   justify-content: center;
-  padding: 8px 16px 10px;
-  background: hsl(28 35% 12%);
-  border-top: 1px solid hsl(35 20% 20%);
+  padding: 2px 16px 8px;
 }
 
-/* Single full-width cycling button — correct proportions match the reference */
+#mode-tooltip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  color: hsl(40 50% 85%);
+  background: linear-gradient(180deg, hsl(35 15% 10%) 0%, hsl(35 10% 6%) 100%);
+  border: 1px solid hsl(45 60% 35%);
+  box-shadow: 0 4px 12px hsl(0 0% 0% / 0.7);
+  padding: 4px 10px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mode-btn:hover + #mode-tooltip {
+  opacity: 1;
+}
+
+/* Single full-width cycling button — standard WarcraftCN style */
 .mode-btn {
   width: 100%;
-  border: 14px solid transparent;
-  border-image-source: url("images/button-bg-with-frame-sm.webp");
-  border-image-slice: 14 fill;
-  border-image-repeat: stretch;
-  padding: 2px 8px;
+  border: none;
+  border-radius: 0;
+  padding: 8px 16px;
   font-family: "Cinzel", serif;
   font-size: 10px;
   font-weight: 700;
@@ -364,7 +383,7 @@ body.rarity-common #card-img {
   text-transform: uppercase;
   color: hsl(45 80% 84%);
   cursor: pointer;
-  background: transparent;
+  background: url("images/button-bg.webp") center / 100% 100% no-repeat;
   transition: filter 0.15s;
 }
 
@@ -394,9 +413,14 @@ body.rarity-common #card-img {
   gap: 10px;
 }
 
-/* Pack meta always uses a neutral common-style background, never rarity-tinted */
+/* Pack meta uses common rarity gradient */
 #pack-panel .card-meta {
-  background: linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 0%,
+      rgba(180, 160, 130, 0.20) 0%,
+      rgba(140, 120, 100, 0.08) 50%,
+      transparent 100%),
+    linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
 }
 
 #pack-label {
@@ -419,8 +443,6 @@ body.rarity-common #card-img {
 #pack-value {
   font-size: 11px;
   color: hsl(45 50% 55%);
-  border-top: 1px solid hsl(35 20% 28%);
-  padding-top: 6px;
   text-align: center;
   line-height: 1.8;
 }

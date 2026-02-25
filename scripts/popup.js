@@ -180,12 +180,24 @@ function renderPack(packData) {
 }
 
 var currentMode = 'card';
+var modeFooter = document.getElementById('mode-footer');
+
+function insertModeButton(panelId) {
+  var panel = document.getElementById(panelId);
+  var meta = panel.querySelector('.card-meta');
+  panel.insertBefore(modeFooter, meta);
+}
+
+var modeTooltip = document.getElementById('mode-tooltip');
+
 document.getElementById('mode-cycle-btn').addEventListener('click', function() {
   currentMode = currentMode === 'card' ? 'pack' : 'card';
   var showCard = currentMode === 'card';
   document.getElementById('card-panel').style.display = showCard ? 'flex' : 'none';
   document.getElementById('pack-panel').style.display = showCard ? 'none' : 'flex';
+  insertModeButton(showCard ? 'card-panel' : 'pack-panel');
   this.textContent = showCard ? 'Best Craft' : 'Best Pack';
+  modeTooltip.textContent = showCard ? 'Switch to Best Pack' : 'Switch to Best Craft';
 });
 
 chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
@@ -221,8 +233,9 @@ chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
         var bestPack = findBestPack(cardFrequencies, cardMap);
         renderPack(bestPack);
 
-        // Always show the toggle now that both panels are ready
-        document.getElementById('mode-footer').style.display = 'flex';
+        // Insert button between frame and meta, then show it
+        insertModeButton('card-panel');
+        modeFooter.style.display = 'flex';
       })
       .catch(function() {
         showError();

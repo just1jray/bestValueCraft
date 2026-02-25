@@ -23,11 +23,18 @@
     </div>
   </div>
 
+  <!-- Mode button — sits between frame and meta, moved into active panel -->
+  <div id="mode-footer" style="display:none">
+    <button id="mode-cycle-btn" class="mode-btn">Best Craft</button>
+    <span id="mode-tooltip">Switch to Best Pack</span>
+  </div>
+
   <!-- Card panel -->
   <div id="card-panel" style="display:none">
     <div id="card-img-wrap" class="wc-card-border fantasy">
       <img id="card-img" alt="card">
     </div>
+    <!-- mode-footer inserted here by JS -->
     <div class="card-meta">
       <h1 id="card-name"></h1>
       <div id="rarity-badge"></div>
@@ -56,15 +63,10 @@
     </div>
     <div class="card-meta">
       <div id="pack-value">
-        <div>Contains <strong id="pack-card-count"></strong> craftable cards in current decks</div>
+        <div>Contains <strong id="pack-card-count"></strong> craftable cards</div>
         <div>totaling <strong id="pack-frequency"></strong> deck appearances</div>
       </div>
     </div>
-  </div>
-
-  <!-- Mode footer — single full-width cycling button, shown after data loads -->
-  <div id="mode-footer" style="display:none">
-    <button id="mode-cycle-btn" class="mode-btn">Best Craft</button>
   </div>
 
   <script src="scripts/popup.js"></script>
