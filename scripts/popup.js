@@ -179,18 +179,13 @@ function renderPack(packData) {
   document.getElementById('pack-frequency').textContent = packData.totalFrequency;
 }
 
-document.getElementById('btn-best-card').addEventListener('click', function() {
-  document.getElementById('card-panel').style.display = 'flex';
-  document.getElementById('pack-panel').style.display = 'none';
-  document.getElementById('btn-best-card').classList.add('active');
-  document.getElementById('btn-best-pack').classList.remove('active');
-});
-
-document.getElementById('btn-best-pack').addEventListener('click', function() {
-  document.getElementById('card-panel').style.display = 'none';
-  document.getElementById('pack-panel').style.display = 'flex';
-  document.getElementById('btn-best-card').classList.remove('active');
-  document.getElementById('btn-best-pack').classList.add('active');
+var currentMode = 'card';
+document.getElementById('mode-cycle-btn').addEventListener('click', function() {
+  currentMode = currentMode === 'card' ? 'pack' : 'card';
+  var showCard = currentMode === 'card';
+  document.getElementById('card-panel').style.display = showCard ? 'flex' : 'none';
+  document.getElementById('pack-panel').style.display = showCard ? 'none' : 'flex';
+  this.textContent = showCard ? 'Best Craft' : 'Best Pack';
 });
 
 chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {

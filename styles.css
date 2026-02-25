@@ -29,7 +29,7 @@ body {
   border-image-source: url("images/card-bg.webp");
   border-image-slice: 24 fill;
   border-image-repeat: stretch;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   filter:
     drop-shadow(0 4px 12px hsl(0 0% 0% / 0.65))
     drop-shadow(0 8px 24px hsl(25 30% 5% / 0.50));
@@ -205,8 +205,8 @@ body.rarity-common #card-img {
   width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 14px 12px 10px;
+  gap: 2px;
+  padding: 10px 12px 8px;
   background: linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
 }
 
@@ -262,7 +262,7 @@ body.rarity-common #card-img {
   justify-content: space-between;
   border-top: 1px solid hsl(35 20% 28%);
   padding-top: 4px;
-  margin-top: 14px;
+  margin-top: 8px;
 }
 
 #mana-cost {
@@ -308,9 +308,9 @@ body.rarity-common #card-img {
 #card-text {
   font-size: 10px;
   color: hsl(40 40% 75%);
-  line-height: 1.45;
+  line-height: 1.4;
   border-top: 1px solid hsl(35 20% 28%);
-  padding-top: 4px;
+  padding-top: 3px;
   text-align: center;
 }
 
@@ -327,7 +327,7 @@ body.rarity-common #card-img {
   font-size: 11px;
   color: hsl(45 50% 55%);
   border-top: 1px solid hsl(35 20% 28%);
-  padding-top: 4px;
+  padding-top: 3px;
   text-align: center;
 }
 
@@ -344,40 +344,32 @@ body.rarity-common #card-img {
   display: none;
   width: 280px;
   justify-content: center;
-  gap: 10px;
-  padding: 10px 16px 12px;
+  padding: 8px 16px 10px;
   background: hsl(28 35% 12%);
   border-top: 1px solid hsl(35 20% 20%);
 }
 
+/* Single full-width cycling button — correct proportions match the reference */
 .mode-btn {
-  flex: 1;
-  /* Standard WarcraftCN button-bg (no extra frame decoration) */
-  border: 8px solid transparent;
+  width: 100%;
+  border: 14px solid transparent;
   border-image-source: url("https://warcraftcn.com/warcraftcn/button-bg.webp");
-  border-image-slice: 8 fill;
+  border-image-slice: 14 fill;
   border-image-repeat: stretch;
-  padding: 3px 6px;
+  padding: 2px 8px;
   font-family: "Cinzel", serif;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  color: hsl(40 30% 52%);
+  color: hsl(45 80% 84%);
   cursor: pointer;
   background: transparent;
-  transition: color 0.15s, filter 0.15s;
+  transition: filter 0.15s;
 }
 
-.mode-btn.active {
-  color: hsl(45 80% 84%);
-  text-shadow: 0 0 8px hsl(45 60% 50% / 0.45);
-  filter: brightness(1.2);
-}
-
-.mode-btn:hover:not(.active) {
-  color: hsl(40 50% 66%);
-  filter: brightness(1.08);
+.mode-btn:hover {
+  filter: brightness(1.12);
 }
 
 /* ============================================
