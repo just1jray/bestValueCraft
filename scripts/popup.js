@@ -147,7 +147,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       return;
     }
     if (!response.card || !response.card.name) {
-      showError('No craftable cards found. Try the Missing Cards tab on HSReplay.net/decks.');
+      showError('No craftable cards found. Sync your collection via HDT and browse decks on HSReplay.net/decks.');
       return;
     }
 
