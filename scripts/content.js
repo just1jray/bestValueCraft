@@ -2,7 +2,12 @@ console.log('Content script running...');
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.type === 'getBestCard') {
-		sendResponse({ card: findBestCraft() });
+		findBestCraft().then(function(result) {
+			sendResponse({ card: result });
+		}).catch(function() {
+			sendResponse({ card: null });
+		});
+		return true; // Keep message channel open for async response
 	}
 	if (request.type === 'getCardFrequencies') {
 		sendResponse({ cards: getAllCardFrequencies() });
@@ -10,21 +15,43 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 function findBestCraft() {
-	var allCraftableCardData = getCardData();
-	var allCraftableCards = trimMultiplierText(allCraftableCardData[0], allCraftableCardData[1], allCraftableCardData[2]);
-	var bestValueCraftCard = mostFrequentOccuranceIn(allCraftableCards[0]);
-	var bestCardIndex = allCraftableCards[0].indexOf(bestValueCraftCard[0]);
-	var result = {
-		name: bestValueCraftCard[0],
-		imageUrl: allCraftableCards[1][bestCardIndex],
-		cardId: allCraftableCards[2][bestCardIndex],
-		frequency: bestValueCraftCard[1]
-	};
-	console.log('bestValueCraft:', result);
-	return result;
+	return fetchUncraftableIds().then(function(uncraftableIds) {
+		var allCraftableCardData = getCardData(uncraftableIds);
+		var allCraftableCards = trimMultiplierText(allCraftableCardData[0], allCraftableCardData[1], allCraftableCardData[2]);
+		var bestValueCraftCard = mostFrequentOccuranceIn(allCraftableCards[0]);
+		var bestCardIndex = allCraftableCards[0].indexOf(bestValueCraftCard[0]);
+		var result = {
+			name: bestValueCraftCard[0],
+			imageUrl: allCraftableCards[1][bestCardIndex],
+			cardId: allCraftableCards[2][bestCardIndex],
+			frequency: bestValueCraftCard[1]
+		};
+		console.log('bestValueCraft:', result);
+		return result;
+	});
 }
 
-function getCardData() {
+function fetchUncraftableIds() {
+	return fetch('https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json')
+		.then(function(res) { return res.json(); })
+		.then(function(cards) {
+			var ids = new Set();
+			cards.forEach(function(card) {
+				// FREE rarity = no rarity gem = cannot be crafted with dust (Core Set, Path of Arthas, etc.)
+				if (!card.rarity || card.rarity === 'FREE') {
+					ids.add(card.id);
+				}
+			});
+			console.log('Uncraftable card IDs loaded:', ids.size);
+			return ids;
+		})
+		.catch(function(e) {
+			console.log('Could not fetch card data, falling back to CORE_ prefix filter only:', e);
+			return new Set();
+		});
+}
+
+function getCardData(uncraftableIds) {
 	var names = [];
 	var images = [];
 	var cardIds = [];
@@ -36,6 +63,8 @@ function getCardData() {
 		var imgUrl = cardId ? 'https://art.hearthstonejson.com/v1/render/latest/enUS/256x/' + cardId + '.png' : null;
 		// Skip Core set cards — they cannot be crafted with dust
 		if (cardId && cardId.startsWith('CORE_')) return;
+		// Skip other uncraftable cards identified via HearthstoneJSON set data
+		if (cardId && uncraftableIds.has(cardId)) return;
 		if (name && imgUrl) {
 			names.push(name);
 			images.push(imgUrl);

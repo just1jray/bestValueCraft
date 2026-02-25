@@ -38,9 +38,12 @@ var SET_NAMES = {
   BATTLE_OF_THE_BANDS: 'Battle of the Bands',
 };
 
-function showError() {
+function showError(message) {
   document.getElementById('loading-state').style.display = 'none';
   document.getElementById('error-state').style.display = 'block';
+  if (message) {
+    document.getElementById('error-message').textContent = message;
+  }
 }
 
 function stripHtml(html) {
@@ -202,8 +205,12 @@ document.getElementById('mode-cycle-btn').addEventListener('click', function() {
 
 chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
   chrome.tabs.sendMessage(tabs[0].id, { type: 'getCardFrequencies' }, function(response) {
-    if (chrome.runtime.lastError || !response || !response.cards || response.cards.length === 0) {
+    if (chrome.runtime.lastError || !response) {
       showError();
+      return;
+    }
+    if (!response.cards || response.cards.length === 0) {
+      showError('No craftable cards found. Sync your collection via HDT and browse decks on HSReplay.net/decks.');
       return;
     }
 
