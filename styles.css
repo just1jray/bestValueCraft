@@ -105,6 +105,13 @@ body {
    CARD IMAGE WRAPPER — wooden frame around card
    ============================================ */
 
+/* Both frames locked to the same height so switching modes keeps the wooden
+   border identical in size. 330px total = 48px border + 282px content. */
+#card-img-wrap,
+#pack-img-wrap {
+  height: 330px;
+}
+
 #card-img-wrap {
   position: relative;
   display: flex;
@@ -116,6 +123,7 @@ body {
 #card-img {
   width: 180px;
   height: auto;
+  max-height: 282px; /* 330px frame height − 48px border */
   display: block;
   position: relative;
   z-index: 1;
@@ -329,32 +337,33 @@ body.rarity-common #card-img {
 }
 
 /* ============================================
-   MODE TOGGLE
+   MODE FOOTER — standard WarcraftCN buttons at bottom
    ============================================ */
 
-#mode-toggle {
+#mode-footer {
   display: none;
   width: 280px;
   justify-content: center;
   gap: 10px;
   padding: 10px 16px 12px;
-  background: hsl(28 40% 10%);
-  border-bottom: 1px solid hsl(35 20% 18%);
+  background: hsl(28 35% 12%);
+  border-top: 1px solid hsl(35 20% 20%);
 }
 
 .mode-btn {
   flex: 1;
-  border: 10px solid transparent;
-  border-image-source: url("images/button-bg-with-frame-sm.webp");
-  border-image-slice: 10 fill;
+  /* Standard WarcraftCN button-bg (no extra frame decoration) */
+  border: 8px solid transparent;
+  border-image-source: url("https://warcraftcn.com/warcraftcn/button-bg.webp");
+  border-image-slice: 8 fill;
   border-image-repeat: stretch;
-  padding: 2px 4px;
+  padding: 3px 6px;
   font-family: "Cinzel", serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: hsl(40 25% 48%);
+  color: hsl(40 30% 52%);
   cursor: pointer;
   background: transparent;
   transition: color 0.15s, filter 0.15s;
@@ -388,8 +397,6 @@ body.rarity-common #card-img {
   justify-content: center;
   align-items: center;
   width: 280px;
-  /* Match approximate card-frame height so the wooden border stays the same size */
-  min-height: 300px;
   text-align: center;
   padding: 32px 24px;
   gap: 10px;

@@ -8,12 +8,6 @@
   <title>Best Craft</title>
 </head>
 <body>
-  <!-- Mode toggle -->
-  <div id="mode-toggle" style="display:none">
-    <button id="btn-best-card" class="mode-btn active">Best Craft</button>
-    <button id="btn-best-pack" class="mode-btn">Best Pack</button>
-  </div>
-
   <!-- Loading state -->
   <div id="loading-state">
     <div id="loading-frame" class="wc-card-border fantasy">
@@ -66,6 +60,12 @@
         <div>totaling <strong id="pack-frequency"></strong> deck appearances</div>
       </div>
     </div>
+  </div>
+
+  <!-- Mode footer — shown after data loads, sits below both panels -->
+  <div id="mode-footer" style="display:none">
+    <button id="btn-best-card" class="mode-btn active">Best Craft</button>
+    <button id="btn-best-pack" class="mode-btn">Best Pack</button>
   </div>
 
   <script src="scripts/popup.js"></script>

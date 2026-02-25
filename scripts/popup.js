@@ -227,7 +227,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
         renderPack(bestPack);
 
         // Always show the toggle now that both panels are ready
-        document.getElementById('mode-toggle').style.display = 'flex';
+        document.getElementById('mode-footer').style.display = 'flex';
       })
       .catch(function() {
         showError();
