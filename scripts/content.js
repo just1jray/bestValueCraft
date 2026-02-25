@@ -1,8 +1,5 @@
 console.log('Content script running...');
 
-// Sets whose cards cannot be crafted with dust
-var UNCRAFTABLE_SETS = ['CORE', 'PATH_OF_ARTHAS', 'ISLAND_VACATION'];
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.type === 'getBestCard') {
 		findBestCraft().then(function(result) {
@@ -37,7 +34,8 @@ function fetchUncraftableIds() {
 		.then(function(cards) {
 			var ids = new Set();
 			cards.forEach(function(card) {
-				if (UNCRAFTABLE_SETS.indexOf(card.set) !== -1) {
+				// FREE rarity = no rarity gem = cannot be crafted with dust (Core Set, Path of Arthas, etc.)
+				if (!card.rarity || card.rarity === 'FREE') {
 					ids.add(card.id);
 				}
 			});
