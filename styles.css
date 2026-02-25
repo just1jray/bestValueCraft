@@ -22,13 +22,14 @@ body {
    ============================================ */
 
 #card-img-wrap,
+#pack-img-wrap,
 #loading-frame,
 #error-frame {
   border: 24px solid transparent;
   border-image-source: url("images/card-bg.webp");
   border-image-slice: 24 fill;
   border-image-repeat: stretch;
-  margin-bottom: 16px;
+  margin-bottom: 2px;
   filter:
     drop-shadow(0 4px 12px hsl(0 0% 0% / 0.65))
     drop-shadow(0 8px 24px hsl(25 30% 5% / 0.50));
@@ -104,6 +105,13 @@ body {
    CARD IMAGE WRAPPER — wooden frame around card
    ============================================ */
 
+/* Both frames locked to the same height so switching modes keeps the wooden
+   border identical in size. 330px total = 48px border + 282px content. */
+#card-img-wrap,
+#pack-img-wrap {
+  height: 330px;
+}
+
 #card-img-wrap {
   position: relative;
   display: flex;
@@ -115,6 +123,7 @@ body {
 #card-img {
   width: 180px;
   height: auto;
+  max-height: 282px; /* 330px frame height − 48px border */
   display: block;
   position: relative;
   z-index: 1;
@@ -125,7 +134,7 @@ body {
    ============================================ */
 
 /* Legendary — orange/gold */
-body.rarity-legendary .card-meta {
+body.rarity-legendary #card-panel .card-meta {
   background:
     radial-gradient(ellipse 100% 50% at 50% 0%,
       rgba(220, 110, 20, 0.30) 0%,
@@ -141,7 +150,7 @@ body.rarity-legendary #card-img {
 }
 
 /* Epic — purple */
-body.rarity-epic .card-meta {
+body.rarity-epic #card-panel .card-meta {
   background:
     radial-gradient(ellipse 100% 50% at 50% 0%,
       rgba(160, 60, 210, 0.30) 0%,
@@ -157,7 +166,7 @@ body.rarity-epic #card-img {
 }
 
 /* Rare — blue */
-body.rarity-rare .card-meta {
+body.rarity-rare #card-panel .card-meta {
   background:
     radial-gradient(ellipse 100% 50% at 50% 0%,
       rgba(50, 110, 210, 0.30) 0%,
@@ -173,7 +182,7 @@ body.rarity-rare #card-img {
 }
 
 /* Common — warm silver/stone */
-body.rarity-common .card-meta {
+body.rarity-common #card-panel .card-meta {
   background:
     radial-gradient(ellipse 100% 50% at 50% 0%,
       rgba(180, 160, 130, 0.20) 0%,
@@ -196,8 +205,8 @@ body.rarity-common #card-img {
   width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 14px 12px 10px;
+  gap: 2px;
+  padding: 10px 12px 8px;
   background: linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
 }
 
@@ -253,7 +262,7 @@ body.rarity-common #card-img {
   justify-content: space-between;
   border-top: 1px solid hsl(35 20% 28%);
   padding-top: 4px;
-  margin-top: 14px;
+  margin-top: 8px;
 }
 
 #mana-cost {
@@ -299,9 +308,9 @@ body.rarity-common #card-img {
 #card-text {
   font-size: 10px;
   color: hsl(40 40% 75%);
-  line-height: 1.45;
+  line-height: 1.4;
   border-top: 1px solid hsl(35 20% 28%);
-  padding-top: 4px;
+  padding-top: 3px;
   text-align: center;
 }
 
@@ -318,11 +327,127 @@ body.rarity-common #card-img {
   font-size: 11px;
   color: hsl(45 50% 55%);
   border-top: 1px solid hsl(35 20% 28%);
-  padding-top: 4px;
+  padding-top: 3px;
   text-align: center;
 }
 
 #craft-value strong {
+  color: hsl(45 70% 72%);
+  font-weight: 700;
+}
+
+/* ============================================
+   MODE FOOTER — standard WarcraftCN buttons at bottom
+   ============================================ */
+
+#mode-footer {
+  display: none;
+  position: relative;
+  width: 100%;
+  justify-content: center;
+  padding: 2px 16px 8px;
+}
+
+#mode-tooltip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  color: hsl(40 50% 85%);
+  background: linear-gradient(180deg, hsl(35 15% 10%) 0%, hsl(35 10% 6%) 100%);
+  border: 1px solid hsl(45 60% 35%);
+  box-shadow: 0 4px 12px hsl(0 0% 0% / 0.7);
+  padding: 4px 10px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mode-btn:hover + #mode-tooltip {
+  opacity: 1;
+}
+
+/* Single full-width cycling button — standard WarcraftCN style */
+.mode-btn {
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  padding: 8px 16px;
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: hsl(45 80% 84%);
+  cursor: pointer;
+  background: url("images/button-bg.webp") center / 100% 100% no-repeat;
+  transition: filter 0.15s;
+}
+
+.mode-btn:hover {
+  filter: brightness(1.12);
+}
+
+/* ============================================
+   PACK PANEL
+   ============================================ */
+
+#pack-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#pack-img-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 280px;
+  text-align: center;
+  padding: 32px 24px;
+  gap: 10px;
+}
+
+/* Pack meta uses common rarity gradient */
+#pack-panel .card-meta {
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 0%,
+      rgba(180, 160, 130, 0.20) 0%,
+      rgba(140, 120, 100, 0.08) 50%,
+      transparent 100%),
+    linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
+}
+
+#pack-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: hsl(40 30% 55%);
+}
+
+#pack-set-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: hsl(45 80% 88%);
+  text-shadow:
+    0 0 16px hsl(45 60% 50% / 0.5),
+    0 1px 3px hsl(0 0% 0% / 0.9);
+  line-height: 1.3;
+}
+
+#pack-value {
+  font-size: 11px;
+  color: hsl(45 50% 55%);
+  text-align: center;
+  line-height: 1.8;
+}
+
+#pack-value strong {
   color: hsl(45 70% 72%);
   font-weight: 700;
 }

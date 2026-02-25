@@ -140,29 +140,109 @@ function renderCard(card, frequency) {
   panel.style.display = 'flex';
 }
 
+function findBestPack(cardFrequencies, cardMap) {
+  var setFrequencies = {};
+  var setCardCounts = {};
+
+  cardFrequencies.forEach(function(cardData) {
+    var hsCard = cardMap[cardData.cardId];
+    if (!hsCard || !hsCard.set) return;
+    var set = hsCard.set;
+    setFrequencies[set] = (setFrequencies[set] || 0) + cardData.frequency;
+    setCardCounts[set] = (setCardCounts[set] || 0) + 1;
+  });
+
+  var bestSet = null;
+  var bestFrequency = 0;
+  Object.keys(setFrequencies).forEach(function(set) {
+    if (setFrequencies[set] > bestFrequency) {
+      bestFrequency = setFrequencies[set];
+      bestSet = set;
+    }
+  });
+
+  if (!bestSet) return null;
+  return {
+    setCode: bestSet,
+    setName: SET_NAMES[bestSet] || bestSet.replace(/_/g, ' '),
+    totalFrequency: bestFrequency,
+    uniqueCardCount: setCardCounts[bestSet]
+  };
+}
+
+function renderPack(packData) {
+  if (!packData) {
+    document.getElementById('pack-set-title').textContent = 'No data';
+    document.getElementById('pack-card-count').textContent = '—';
+    document.getElementById('pack-frequency').textContent = '—';
+    return;
+  }
+  document.getElementById('pack-set-title').textContent = packData.setName;
+  document.getElementById('pack-card-count').textContent = packData.uniqueCardCount;
+  document.getElementById('pack-frequency').textContent = packData.totalFrequency;
+}
+
+var currentMode = 'card';
+var modeFooter = document.getElementById('mode-footer');
+
+function insertModeButton(panelId) {
+  var panel = document.getElementById(panelId);
+  var meta = panel.querySelector('.card-meta');
+  panel.insertBefore(modeFooter, meta);
+}
+
+var modeTooltip = document.getElementById('mode-tooltip');
+
+document.getElementById('mode-cycle-btn').addEventListener('click', function() {
+  currentMode = currentMode === 'card' ? 'pack' : 'card';
+  var showCard = currentMode === 'card';
+  document.getElementById('card-panel').style.display = showCard ? 'flex' : 'none';
+  document.getElementById('pack-panel').style.display = showCard ? 'none' : 'flex';
+  insertModeButton(showCard ? 'card-panel' : 'pack-panel');
+  this.textContent = showCard ? 'Best Craft' : 'Best Pack';
+  modeTooltip.textContent = showCard ? 'Switch to Best Pack' : 'Switch to Best Craft';
+});
+
 chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-  chrome.tabs.sendMessage(tabs[0].id, { type: 'getBestCard' }, function(response) {
+  chrome.tabs.sendMessage(tabs[0].id, { type: 'getCardFrequencies' }, function(response) {
     if (chrome.runtime.lastError || !response) {
       showError();
       return;
     }
-    if (!response.card || !response.card.name) {
+    if (!response.cards || response.cards.length === 0) {
       showError('No craftable cards found. Sync your collection via HDT and browse decks on HSReplay.net/decks.');
       return;
     }
 
-    var cardData = response.card;
+    var cardFrequencies = response.cards;
+
+    // Find the single card with the highest frequency
+    var bestCardData = cardFrequencies.reduce(function(best, card) {
+      return card.frequency > best.frequency ? card : best;
+    });
 
     fetch('https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json')
       .then(function(res) { return res.json(); })
-      .then(function(cards) {
-        var card = cards.find(function(c) { return c.id === cardData.cardId; });
-        if (!card) {
-          // Fallback: render with just name and image from content script
-          renderCard({ id: cardData.cardId, name: cardData.name }, cardData.frequency);
-          return;
+      .then(function(hsCards) {
+        // Build ID lookup map for O(1) access
+        var cardMap = {};
+        hsCards.forEach(function(c) { cardMap[c.id] = c; });
+
+        // Render best card
+        var card = cardMap[bestCardData.cardId];
+        if (card) {
+          renderCard(card, bestCardData.frequency);
+        } else {
+          renderCard({ id: bestCardData.cardId, name: bestCardData.name }, bestCardData.frequency);
         }
-        renderCard(card, cardData.frequency);
+
+        // Compute and render best pack
+        var bestPack = findBestPack(cardFrequencies, cardMap);
+        renderPack(bestPack);
+
+        // Insert button between frame and meta, then show it
+        insertModeButton('card-panel');
+        modeFooter.style.display = 'flex';
       })
       .catch(function() {
         showError();

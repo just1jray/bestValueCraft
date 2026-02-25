@@ -12,7 +12,7 @@
   <div id="loading-state">
     <div id="loading-frame" class="wc-card-border fantasy">
       <div class="wc-skeleton-shimmer"></div>
-      <p>Finding best craft...</p>
+      <p>Finding best value...</p>
     </div>
   </div>
 
@@ -23,11 +23,18 @@
     </div>
   </div>
 
+  <!-- Mode button — sits between frame and meta, moved into active panel -->
+  <div id="mode-footer" style="display:none">
+    <button id="mode-cycle-btn" class="mode-btn">Best Craft</button>
+    <span id="mode-tooltip">Switch to Best Pack</span>
+  </div>
+
   <!-- Card panel -->
   <div id="card-panel" style="display:none">
     <div id="card-img-wrap" class="wc-card-border fantasy">
       <img id="card-img" alt="card">
     </div>
+    <!-- mode-footer inserted here by JS -->
     <div class="card-meta">
       <h1 id="card-name"></h1>
       <div id="rarity-badge"></div>
@@ -44,6 +51,20 @@
       <div id="card-text"></div>
       <div id="craft-value">
         Appears in <strong id="frequency"></strong> decks
+      </div>
+    </div>
+  </div>
+
+  <!-- Pack panel -->
+  <div id="pack-panel" style="display:none">
+    <div id="pack-img-wrap" class="wc-card-border fantasy">
+      <div id="pack-label">Best Pack to Open</div>
+      <div id="pack-set-title"></div>
+    </div>
+    <div class="card-meta">
+      <div id="pack-value">
+        <div>Contains <strong id="pack-card-count"></strong> craftable cards</div>
+        <div>totaling <strong id="pack-frequency"></strong> deck appearances</div>
       </div>
     </div>
   </div>
