@@ -38,9 +38,12 @@ var SET_NAMES = {
   BATTLE_OF_THE_BANDS: 'Battle of the Bands',
 };
 
-function showError() {
+function showError(message) {
   document.getElementById('loading-state').style.display = 'none';
   document.getElementById('error-state').style.display = 'block';
+  if (message) {
+    document.getElementById('error-message').textContent = message;
+  }
 }
 
 function stripHtml(html) {
@@ -139,8 +142,12 @@ function renderCard(card, frequency) {
 
 chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
   chrome.tabs.sendMessage(tabs[0].id, { type: 'getBestCard' }, function(response) {
-    if (chrome.runtime.lastError || !response || !response.card || !response.card.name) {
+    if (chrome.runtime.lastError || !response) {
       showError();
+      return;
+    }
+    if (!response.card || !response.card.name) {
+      showError('No craftable cards found. Try the Missing Cards tab on HSReplay.net/decks.');
       return;
     }
 
