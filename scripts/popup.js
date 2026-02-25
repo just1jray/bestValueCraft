@@ -28,7 +28,7 @@ var SET_NAMES = {
   REVENDRETH: 'Murder at Castle Nathria',
   RETURN_OF_THE_LICH_KING: 'March of the Lich King',
   FESTIVAL_OF_LEGENDS: 'Festival of Legends',
-  TITANS: 'TITANS',
+  TITANS: 'Titans',
   WILD_WEST: 'Showdown in the Badlands',
   WHIZBANGS_WORKSHOP: "Whizbang's Workshop",
   SPACE: 'Perils in Paradise',
@@ -38,26 +38,25 @@ var SET_NAMES = {
   BATTLE_OF_THE_BANDS: 'Battle of the Bands',
 };
 
+var CARDS_CACHE_KEY = 'hs_cards_cache';
+var CARDS_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
 function showError(message) {
   document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('card-panel').style.display = 'none';
+  document.getElementById('pack-panel').style.display = 'none';
   document.getElementById('error-state').style.display = 'block';
   if (message) {
     document.getElementById('error-message').textContent = message;
   }
 }
 
-function stripHtml(html) {
-  return html
-    .replace(/<[^>]+>/g, '')
-    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
-    .replace(/^\[x\]/i, '')
-    .trim();
-}
-
 function formatCardText(html) {
+  // Decode entities FIRST, then strip tags to prevent entity-encoded XSS bypass
   return html
-    .replace(/<(?!\/?b\b)[^>]+>/g, '')
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
+    .replace(/<b\b[^>]*>/g, '<b>')         // normalize <b ...> to <b> (strip attributes)
+    .replace(/<(?!\/?b>)[^>]+>/g, '')       // strip all non-<b> tags
     .replace(/^\[x\]/i, '')
     .trim();
 }
@@ -137,6 +136,7 @@ function renderCard(card, frequency) {
 
   // Show card panel
   document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('error-state').style.display = 'none';
   panel.style.display = 'flex';
 }
 
@@ -203,7 +203,38 @@ document.getElementById('mode-cycle-btn').addEventListener('click', function() {
   modeTooltip.textContent = showCard ? 'Switch to Best Pack' : 'Switch to Best Craft';
 });
 
+function getCards(callback) {
+  chrome.storage.local.get(CARDS_CACHE_KEY, function(result) {
+    var cached = result[CARDS_CACHE_KEY];
+    if (cached && (Date.now() - cached.timestamp < CARDS_CACHE_TTL)) {
+      callback(cached.cards);
+      return;
+    }
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function() { controller.abort(); }, 8000);
+    fetch('https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json', { signal: controller.signal })
+      .then(function(res) {
+        clearTimeout(timeoutId);
+        return res.json();
+      })
+      .then(function(cards) {
+        var store = {};
+        store[CARDS_CACHE_KEY] = { cards: cards, timestamp: Date.now() };
+        chrome.storage.local.set(store);
+        callback(cards);
+      })
+      .catch(function() {
+        clearTimeout(timeoutId);
+        showError();
+      });
+  });
+}
+
 chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+  if (!tabs || !tabs[0]) {
+    showError();
+    return;
+  }
   chrome.tabs.sendMessage(tabs[0].id, { type: 'getCardFrequencies' }, function(response) {
     if (chrome.runtime.lastError || !response) {
       showError();
@@ -221,31 +252,26 @@ chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       return card.frequency > best.frequency ? card : best;
     });
 
-    fetch('https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json')
-      .then(function(res) { return res.json(); })
-      .then(function(hsCards) {
-        // Build ID lookup map for O(1) access
-        var cardMap = {};
-        hsCards.forEach(function(c) { cardMap[c.id] = c; });
+    getCards(function(hsCards) {
+      // Build ID lookup map for O(1) access
+      var cardMap = {};
+      hsCards.forEach(function(c) { cardMap[c.id] = c; });
 
-        // Render best card
-        var card = cardMap[bestCardData.cardId];
-        if (card) {
-          renderCard(card, bestCardData.frequency);
-        } else {
-          renderCard({ id: bestCardData.cardId, name: bestCardData.name }, bestCardData.frequency);
-        }
+      // Render best card
+      var card = cardMap[bestCardData.cardId];
+      if (card) {
+        renderCard(card, bestCardData.frequency);
+      } else {
+        renderCard({ id: bestCardData.cardId, name: bestCardData.name }, bestCardData.frequency);
+      }
 
-        // Compute and render best pack
-        var bestPack = findBestPack(cardFrequencies, cardMap);
-        renderPack(bestPack);
+      // Compute and render best pack
+      var bestPack = findBestPack(cardFrequencies, cardMap);
+      renderPack(bestPack);
 
-        // Insert button between frame and meta, then show it
-        insertModeButton('card-panel');
-        modeFooter.style.display = 'flex';
-      })
-      .catch(function() {
-        showError();
-      });
+      // Insert button between frame and meta, then show it
+      insertModeButton('card-panel');
+      modeFooter.style.display = 'flex';
+    });
   });
 });
