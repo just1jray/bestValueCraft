@@ -353,7 +353,7 @@ body.rarity-common #card-img {
 .mode-btn {
   width: 100%;
   border: 14px solid transparent;
-  border-image-source: url("https://warcraftcn.com/warcraftcn/button-bg.webp");
+  border-image-source: url("images/button-bg-with-frame-sm.webp");
   border-image-slice: 14 fill;
   border-image-repeat: stretch;
   padding: 2px 8px;
