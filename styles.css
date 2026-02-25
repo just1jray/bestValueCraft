@@ -53,6 +53,11 @@ body {
     drop-shadow(0 8px 24px hsl(25 30% 5% / 0.50));
 }
 
+#loading-frame,
+#error-frame {
+  margin-bottom: 16px;
+}
+
 /* ============================================
    LOADING STATE
    ============================================ */
