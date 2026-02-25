@@ -168,6 +168,12 @@ function findBestPack(cardFrequencies, cardMap) {
 }
 
 function renderPack(packData) {
+  if (!packData) {
+    document.getElementById('pack-set-title').textContent = 'No data';
+    document.getElementById('pack-card-count').textContent = '—';
+    document.getElementById('pack-frequency').textContent = '—';
+    return;
+  }
   document.getElementById('pack-set-title').textContent = packData.setName;
   document.getElementById('pack-card-count').textContent = packData.uniqueCardCount;
   document.getElementById('pack-frequency').textContent = packData.totalFrequency;
@@ -218,10 +224,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
 
         // Compute and render best pack
         var bestPack = findBestPack(cardFrequencies, cardMap);
-        if (bestPack) {
-          renderPack(bestPack);
-          document.getElementById('mode-toggle').style.display = 'flex';
-        }
+        renderPack(bestPack);
+
+        // Always show the toggle now that both panels are ready
+        document.getElementById('mode-toggle').style.display = 'flex';
       })
       .catch(function() {
         showError();
