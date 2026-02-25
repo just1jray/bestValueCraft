@@ -4,6 +4,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.type === 'getBestCard') {
 		sendResponse({ card: findBestCraft() });
 	}
+	if (request.type === 'getCardFrequencies') {
+		sendResponse({ cards: getAllCardFrequencies() });
+	}
 });
 
 function findBestCraft() {
@@ -82,6 +85,40 @@ function mostFrequentOccuranceIn(array) {
 		}
 	}
 	return [ mostFrequentOccurance, occurances ];
+}
+
+function getAllCardFrequencies() {
+	var allCraftableCardData = getCardData();
+	var allCraftableCards = trimMultiplierText(
+		allCraftableCardData[0],
+		allCraftableCardData[1],
+		allCraftableCardData[2]
+	);
+	var names = allCraftableCards[0];
+	var images = allCraftableCards[1];
+	var cardIds = allCraftableCards[2];
+
+	var counts = {};
+	for (var i = 0; i < cardIds.length; i++) {
+		counts[cardIds[i]] = (counts[cardIds[i]] || 0) + 1;
+	}
+
+	var seen = {};
+	var result = [];
+	for (var i = 0; i < names.length; i++) {
+		var id = cardIds[i];
+		if (!seen[id]) {
+			seen[id] = true;
+			result.push({
+				name: names[i],
+				cardId: id,
+				imageUrl: images[i],
+				frequency: counts[id]
+			});
+		}
+	}
+	console.log('cardFrequencies (' + result.length + ' unique cards):', result);
+	return result;
 }
 
 function sortByFrequency(array) {

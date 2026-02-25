@@ -8,11 +8,17 @@
   <title>Best Craft</title>
 </head>
 <body>
+  <!-- Mode toggle -->
+  <div id="mode-toggle" style="display:none">
+    <button id="btn-best-card" class="mode-btn active">Best Craft</button>
+    <button id="btn-best-pack" class="mode-btn">Best Pack</button>
+  </div>
+
   <!-- Loading state -->
   <div id="loading-state">
     <div id="loading-frame" class="wc-card-border fantasy">
       <div class="wc-skeleton-shimmer"></div>
-      <p>Finding best craft...</p>
+      <p>Finding best value...</p>
     </div>
   </div>
 
@@ -44,6 +50,20 @@
       <div id="card-text"></div>
       <div id="craft-value">
         Appears in <strong id="frequency"></strong> decks
+      </div>
+    </div>
+  </div>
+
+  <!-- Pack panel -->
+  <div id="pack-panel" style="display:none">
+    <div id="pack-img-wrap" class="wc-card-border fantasy">
+      <div id="pack-label">Best Pack to Open</div>
+      <div id="pack-set-title"></div>
+    </div>
+    <div class="card-meta">
+      <div id="pack-value">
+        <div>Contains <strong id="pack-card-count"></strong> craftable cards in current decks</div>
+        <div>totaling <strong id="pack-frequency"></strong> deck appearances</div>
       </div>
     </div>
   </div>
